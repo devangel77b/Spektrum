@@ -1,0 +1,4 @@
+*~
+*.pyc
+.mbed
+mbed_settings.py
