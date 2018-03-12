@@ -24,27 +24,50 @@
 #define SPEKTRUM_11MS_2048_DSMX 0xb2
 
 #define SPEKTRUM_BAUD 125000
-
+// Spektrum baud is 125000, but if this doesn't work 115200 should work too. 
 
 
 
 class Spektrum{
+ public:
+  unsigned int fades = 0;
+  unsigned int system = SPEKTRUM_22MS_2048_DSMX;
+  unsigned int servo[7];
+  Bool is_bound = false;
+  Spektrum(PinName tx, PinName rx); // constructor
+  ~Spektrum(); // destructor
 
-public:
-unsigned int fades = 0;
-unsigned int system = SPEKTRUM_22MS_2048_DSMX;
-unsigned int servo[7];
-Bool is_bound = false;
+ private:
+  Serial _receiver;
+};
 
-Spektrum(PinName tx, PinName rx); // constructor
 
-~Spektrum(); // destructor
 
-void bind(int bind_mode = SPEKTRUM_INT_DSMX_11MS); 
 
-private:
-Serial _receiver;
 
+class BindPlug{
+ public:
+  int mode; 
+  BindPlug(PinName bind, int mode = SPEKTRUM_INT_DSMX_11MS);
+  ~BindPlug();
+  void bind();
+
+ private:
+  DigitalOut _bindpin;
+};
+
+
+
+
+class SpektrumTestDevice{
+ public:
+  unsigned int fades = 0;
+  unsigned int servo[7];
+  SpektrumTestDevice(PinName tx, PinName rx);
+  ~SpektrumTestDevice();
+
+ private:
+  Serial _receiver; 
 };
 
 #endif

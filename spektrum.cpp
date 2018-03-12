@@ -11,6 +11,19 @@ spektrum::Spektrum(PinName tx, PinName rx): _receiver(tx, rx){
 spektrum::~Spektrum(){
 } // ~Spektrum() destructor
 
-void bind(int bind_mode = SPEKTRUM_INT_DSMX_11MS){
-  debug("Spektrum: bind() not yet implemented");
-}
+
+
+spektrum::BindPlug(PinName bind, int mode = SPEKTRUM_INT_DSMX_11MS): _bindpin(bind){
+} // BindPlug(bind, mode) constructor
+
+spektrum::~BindPlug(){
+} // ~BindPlug() destructor
+
+
+
+spektrum::SpektrumTestDevice(PinName tx, PinName rx): _receiver(tx,rx){
+  _receiver.baud(SPEKTRUM_BAUD);
+} // SpektrumTestDevice(tx, rx) constructor
+
+spektrum::~SpektrumTestDevice(){
+} // ~SpektrumTestDevice() destructor
