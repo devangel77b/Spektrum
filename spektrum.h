@@ -30,10 +30,10 @@
 
 class Spektrum{
  public:
-  unsigned int fades = 0;
-  unsigned int system = SPEKTRUM_22MS_2048_DSMX;
+  unsigned int fades; 
+  unsigned int system; 
   unsigned int servo[7];
-  Bool is_bound = false;
+  bool is_bound;
   Spektrum(PinName tx, PinName rx); // constructor
   ~Spektrum(); // destructor
 
@@ -48,7 +48,7 @@ class Spektrum{
 class BindPlug{
  public:
   int mode; 
-  BindPlug(PinName bind, int mode = SPEKTRUM_INT_DSMX_11MS);
+  BindPlug(PinName tx, PinName rx, int mode = SPEKTRUM_INT_DSMX_11MS);
   ~BindPlug();
   void bind();
 
@@ -61,7 +61,7 @@ class BindPlug{
 
 class SpektrumTestDevice{
  public:
-  unsigned int fades = 0;
+  unsigned int fades;
   unsigned int servo[7];
   SpektrumTestDevice(PinName tx, PinName rx);
   ~SpektrumTestDevice();
