@@ -57,8 +57,6 @@ class BindPlug{
 };
 
 
-
-
 class SpektrumTestDevice{
  public:
   unsigned int fades;
@@ -69,5 +67,6 @@ class SpektrumTestDevice{
  private:
   Serial _receiver; 
 };
+
 
 #endif
