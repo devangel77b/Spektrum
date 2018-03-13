@@ -14,6 +14,7 @@
 // field definitions
 // #define SPEKTRUM_MASK_1024_CHANID 0xfc00
 // #define SPEKTRUM_MASK_1024_SXPOS 0x03ff
+// first two only used in DSM2 which are not implemented
 #define SPEKTRUM_MASK_2048_CHANID 0x7800
 #define SPEKTRUM_MASK_2048_SXPOS 0x07ff
 
