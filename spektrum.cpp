@@ -23,8 +23,8 @@ Spektrum::~Spektrum(){
 
 
 /* BindPlug is used to bind a Spektrum Satellite receiver
-   @param(tx) is the orange wire, 3.3V supply pin, here used as DigitalOut
-   @param(rx) is the gray wire, rx pin, unused here
+   @param(tx) is the orange wire, 3.3V supply pin, here used as a DigitalOut
+   @param(rx) is the gray wire, rx pin, here used as a DigitalOut
    @param(mode) is the mode, e.g. internal or external, DSM2 or DSMX, 11 or 22ms
    The black wire should be connected to ground.
 
@@ -32,21 +32,27 @@ Spektrum::~Spektrum(){
    send a number of falling pulses over the 3.3V supply pin to trigger 
    the satellite receiver to go into bind mode. 
 */
-BindPlug::BindPlug(PinName tx, PinName rx, int mode): _bindpin(tx){
+BindPlug::BindPlug(PinName tx, PinName rx, int mode): _3Vpin(tx),_datapin(rx){
   int i; // counter
   
   // within 200 ms of applying power, supply a bunch of falling pulses
   // according to table in Spektrum docs, most likely 9 pulses for
-  // internal mode, DSMX, 11 ms. 
-  _bindpin = 1;
-  Thread::wait(5);
+  // internal mode, DSMX, 11 ms.
+  _3Vpin = 0;
+  _datapin = 0; 
+  wait(1);
+  _3Vpin = 1; 
+  _datapin = 1;
+  wait_ms(72);
+  debug("pulse ");
   for(i=0; i<mode; i++){
-    Thread::wait(5);
-    _bindpin = 0; // this is the falling pulse
-    Thread::wait(5);
-    _bindpin = 1; 
+    debug("%d ",i);
+    wait_us(116);
+    _datapin = 0; // this is the falling pulse
+    wait_us(116);
+    _datapin = 1; 
   }
-  
+  debug("\n\r"); 
 } // BindPlug(bind, mode) constructor
 
 BindPlug::~BindPlug(){

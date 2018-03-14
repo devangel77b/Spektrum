@@ -54,7 +54,8 @@ class BindPlug{
   void bind();
 
  private:
-  DigitalOut _bindpin;
+  DigitalOut _3Vpin;
+  DigitalOut _datapin;
 };
 
 
