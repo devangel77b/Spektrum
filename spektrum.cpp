@@ -10,13 +10,20 @@
 
    The receiver should first be bound using a BindPlug object. 
 */
-Spektrum::Spektrum(PinName tx, PinName rx): _receiver(tx, rx){
+Spektrum::Spektrum(PinName tx, PinName rx, PinName rx_led): _receiver(tx, rx), _rx_led(rx_led){
   _receiver.baud(SPEKTRUM_BAUD); // Spektrum uses 125000 8N1 or 115200 8N1
+
+  _receiver.attach(callback(this,&Spektrum::_rx_callback)); 
 } // Spektrum(tx, rx) constructor
 
 Spektrum::~Spektrum(){
 } // ~Spektrum() destructor
 
+void Spektrum::_rx_callback(void){
+  _rx_led.write(!_rx_led.read());
+  _buf[_i] = _receiver.getc();
+  _i = (_i+1) % SPEKTRUM_PACKET_SIZE;
+} // _packet_callback() 
 
 
 

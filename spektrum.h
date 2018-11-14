@@ -10,6 +10,7 @@
 #define SPEKTRUM_INT_DSMX_11MS 9
 #define SPEKTRUM_EXT_DSMX_11MS 10
 // DSM2 bind modes not recommended, not implemented
+// EXT(ernal) bind modes don't really work on solitary satellite receiver
 
 // field definitions
 // #define SPEKTRUM_MASK_1024_CHANID 0xfc00
@@ -27,19 +28,23 @@
 #define SPEKTRUM_BAUD 125000
 // Spektrum baud is 125000, but if this doesn't work 115200 should work too. 
 
-
+#define SPEKTRUM_PACKET_SIZE 16
 
 class Spektrum{
  public:
-  unsigned int fades; 
   unsigned int system; 
-  unsigned int servo[7];
-  bool is_bound;
-  Spektrum(PinName tx, PinName rx); // constructor
+  unsigned int fades; 
+  unsigned int channel[12];
+  Spektrum(PinName tx, PinName rx, PinName rx_led=LED1); // constructor
   ~Spektrum(); // destructor
 
  private:
   Serial _receiver;
+  DigitalOut _rx_led;
+  
+  char _buf[SPEKTRUM_PACKET_SIZE];
+  int _i; 
+  void _rx_callback(void); 
 };
 
 
