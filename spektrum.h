@@ -39,6 +39,7 @@ class Spektrum{
   unsigned int system; 
   unsigned int fades; 
   unsigned int channel[SPEKTRUM_CHANNELS];
+  bool valid; 
   Spektrum(PinName tx, PinName rx, PinName rx_led=LED1); // constructor
   ~Spektrum(); // destructor
 
@@ -52,7 +53,11 @@ class Spektrum{
   void _rx_callback(void); 
 };
 
-
+/** Convert 2048 value into us pwm pulse width (600-2100us, 900us center). 
+    @param(servopos) is position value (0-2048) for a channel
+    @returns us for use with PwmOut::pulsewidth_us(). 
+ */
+int spektrum_us(int servopos); 
 
 
 

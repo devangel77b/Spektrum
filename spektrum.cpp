@@ -35,9 +35,10 @@ void Spektrum::_rx_callback(void){
 	switch(_state){
 
 	case 0: // idle, waiting for start
-	  if ((c==SPEKTRUM_22MS_2048_DSMX) || (c==SPEKTRUM_11MS_2048_DSMX))
+	  if ((c==SPEKTRUM_22MS_2048_DSMX) || (c==SPEKTRUM_11MS_2048_DSMX)){
 	    system = c; 
 	    _state = 1;
+	  }
 	  break;
 
 	case 1: // got 0xa2 or 0xb2, get fades next
@@ -45,7 +46,7 @@ void Spektrum::_rx_callback(void){
 	  _state = 2;
 	  break;
 
-	default:
+	default: // got fades, now get servopos for channels 0-7
 	  _data[_state-2] = c;
 	  _state++;
 	  if (_state == SPEKTRUM_NUM_BYTES_IN_FRAME-1){
@@ -53,12 +54,13 @@ void Spektrum::_rx_callback(void){
 	    for (i=0; i<SPEKTRUM_SERVOS; i++){
 	      channelid = (_data[2*i] & SPEKTRUM_MASK_2048_CHANID_MSB) >> 3;
 	      servopos = ((_data[2*i] << 8) | _data[2*i+1]) & SPEKTRUM_MASK_2048_SXPOS;
-	      if ((channelid >= 0) && (channelid < SPEKTRUM_CHANNELS))
+	      if (channelid < SPEKTRUM_CHANNELS) // channelid is always >=0
 		channel[channelid] = servopos;
 	    } // unpack data into channels
 
 	    // output data is now valid
-	    // set some flags LATER
+	    // set some flags, maybe LATER switch to EventFlag? 
+	    valid = true; 
 
 	    _state = 0; // reset state machine to idle
 	  }// if complete packet received
@@ -67,7 +69,9 @@ void Spektrum::_rx_callback(void){
   } // while(1)
 } // _rx_callback() 
 
-
+int spektrum_us(unsigned int servopos){
+  return (servopos * 600/1024 + 900);
+}
 
 
 
