@@ -1,8 +1,8 @@
 /*
-  TESTS/binding/int_dsmx_11ms/main.cpp
-  Spektrum binding test, internal DSMX 11ms
+  TESTS/binding/ext_dsmx_11ms/main.cpp
+  Spektrum binding test, external DSMX 11ms
   D Evangelista, 2018
-  Test passed on 13 Nov 2018
+  Expected failure when using the satellite receiver as only receiver
 */
 
 #include "mbed.h"
@@ -11,7 +11,7 @@
 #include "unity.h"
 
 Serial pc(USBTX, USBRX); 
-BindPlug bind_Plug(p13, p14, SPEKTRUM_INT_DSMX_11MS);
+BindPlug bind_Plug(p13, p14, SPEKTRUM_EXT_DSMX_11MS);
 char c;
 
 
@@ -26,7 +26,7 @@ int main(){
 
   TEST_ASSERT_EQUAL_MESSAGE('y',c,"Binding test failed.\r\n");
 
-} // main() for TESTS/binding/int_dsmx_11ms
+} // main() for TESTS/binding/ext_dsmx_11ms
 
 
 

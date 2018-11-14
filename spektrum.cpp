@@ -52,7 +52,7 @@ BindPlug::BindPlug(PinName tx, PinName rx, int mode): _3Vpin(tx),_datapin(rx){
     wait_us(116);
     _datapin = 1; 
   }
-  debug("\n\r"); 
+  debug("\r\n"); 
 } // BindPlug(bind, mode) constructor
 
 BindPlug::~BindPlug(){
