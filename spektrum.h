@@ -57,7 +57,7 @@ class Spektrum{
     @param(servopos) is position value (0-2048) for a channel
     @returns us for use with PwmOut::pulsewidth_us(). 
  */
-int spektrum_us(int servopos); 
+int spektrum_us(unsigned int servopos); 
 
 
 
