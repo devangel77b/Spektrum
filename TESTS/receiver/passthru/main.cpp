@@ -37,8 +37,10 @@ int main(void){
       // display on screen? may be too slow for 22 ms update rate
       pc.printf("%d. THR %4d AIL %4d ELE %4d RUD %4d\r\n",
 		i, 
-		receiver.channel[0], receiver.channel[1],
-		receiver.channel[2], receiver.channel[3]);
+		spektrum_us(receiver.channel[0]),
+		spektrum_us(receiver.channel[1]),
+		spektrum_us(receiver.channel[2]),
+		spektrum_us(receiver.channel[3]));
 
       // set pwms 
       throttle.pulsewidth_us(spektrum_us(receiver.channel[0]));
