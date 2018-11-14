@@ -17,6 +17,7 @@
 // #define SPEKTRUM_MASK_1024_SXPOS 0x03ff
 // first two only used in DSM2 which are not implemented
 #define SPEKTRUM_MASK_2048_CHANID 0x7800
+#define SPEKTRUM_MASK_2048_CHANID_MSB 0x78
 #define SPEKTRUM_MASK_2048_SXPOS 0x07ff
 
 // allowable system field values
@@ -28,22 +29,26 @@
 #define SPEKTRUM_BAUD 125000
 // Spektrum baud is 125000, but if this doesn't work 115200 should work too. 
 
-#define SPEKTRUM_PACKET_SIZE 16
+#define SPEKTRUM_SERVOS (7)
+#define SPEKTRUM_NUM_BYTES_IN_FRAME (2*SPEKTRUM_SERVOS+2)
+#define SPEKTRUM_NUM_BYTES_SERVOS (2*SPEKTRUM_SERVOS)
+#define SPEKTRUM_CHANNELS 12
 
 class Spektrum{
  public:
   unsigned int system; 
   unsigned int fades; 
-  unsigned int channel[12];
+  unsigned int channel[SPEKTRUM_CHANNELS];
   Spektrum(PinName tx, PinName rx, PinName rx_led=LED1); // constructor
   ~Spektrum(); // destructor
 
  private:
   Serial _receiver;
   DigitalOut _rx_led;
-  
-  char _buf[SPEKTRUM_PACKET_SIZE];
-  int _i; 
+
+  char _state; 
+  unsigned char _data[SPEKTRUM_NUM_BYTES_SERVOS];
+  Thread _rx_thread;
   void _rx_callback(void); 
 };
 
@@ -63,7 +68,8 @@ class BindPlug{
   DigitalOut _datapin;
 };
 
-
+/*
+// LATER
 class SpektrumTestDevice{
  public:
   unsigned int fades;
@@ -74,6 +80,6 @@ class SpektrumTestDevice{
  private:
   Serial _receiver; 
 };
-
+*/
 
 #endif

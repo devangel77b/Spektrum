@@ -13,17 +13,59 @@
 Spektrum::Spektrum(PinName tx, PinName rx, PinName rx_led): _receiver(tx, rx), _rx_led(rx_led){
   _receiver.baud(SPEKTRUM_BAUD); // Spektrum uses 125000 8N1 or 115200 8N1
 
-  _receiver.attach(callback(this,&Spektrum::_rx_callback)); 
+  _rx_thread.start(callback(this,&Spektrum::_rx_callback)); 
 } // Spektrum(tx, rx) constructor
 
 Spektrum::~Spektrum(){
 } // ~Spektrum() destructor
 
 void Spektrum::_rx_callback(void){
-  _rx_led.write(!_rx_led.read());
-  _buf[_i] = _receiver.getc();
-  _i = (_i+1) % SPEKTRUM_PACKET_SIZE;
-} // _packet_callback() 
+  unsigned char c;        // character read 
+  unsigned int i;         // for loop counter
+  unsigned int channelid; // for unpacking channel id 
+  unsigned int servopos;  // for unpacking servo position data
+  
+  // setup
+  debug("Spektrum rx_thread started\r\n");
+
+  // loop
+  while(1){
+    if (_receiver.readable()){
+	c = _receiver.getc();
+	switch(_state){
+
+	case 0: // idle, waiting for start
+	  if ((c==SPEKTRUM_22MS_2048_DSMX) || (c==SPEKTRUM_11MS_2048_DSMX))
+	    system = c; 
+	    _state = 1;
+	  break;
+
+	case 1: // got 0xa2 or 0xb2, get fades next
+	  fades = c;
+	  _state = 2;
+	  break;
+
+	default:
+	  _data[_state-2] = c;
+	  _state++;
+	  if (_state == SPEKTRUM_NUM_BYTES_IN_FRAME-1){
+
+	    for (i=0; i<SPEKTRUM_SERVOS; i++){
+	      channelid = (_data[2*i] & SPEKTRUM_MASK_2048_CHANID_MSB) >> 3;
+	      servopos = ((_data[2*i] << 8) | _data[2*i+1]) & SPEKTRUM_MASK_2048_SXPOS;
+	      if ((channelid >= 0) && (channelid < SPEKTRUM_CHANNELS))
+		channel[channelid] = servopos;
+	    } // unpack data into channels
+
+	    // output data is now valid
+	    // set some flags LATER
+
+	    _state = 0; // reset state machine to idle
+	  }// if complete packet received
+	} // switch(_state)
+    } // if readable
+  } // while(1)
+} // _rx_callback() 
 
 
 
@@ -70,10 +112,12 @@ BindPlug::~BindPlug(){
 
 
 
-
+/*
+// LATER
 SpektrumTestDevice::SpektrumTestDevice(PinName tx, PinName rx): _receiver(tx,rx){
   _receiver.baud(SPEKTRUM_BAUD);
 } // SpektrumTestDevice(tx, rx) constructor
 
 SpektrumTestDevice::~SpektrumTestDevice(){
 } // ~SpektrumTestDevice() destructor
+*/
