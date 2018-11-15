@@ -15,8 +15,8 @@
 
 
 /** Spektrum is used for a working connection to a Spektrum Satellite receiver
-    @param(tx), orange wire, 3.3V supply pin (should be held high normally)
-    @param(rx), gray wire, rx pin from the receiver
+    @param tx orange wire, 3.3V supply pin (should be held high normally)
+    @param rx gray wire, rx pin from the receiver
     The black wire should be connected to ground. 
 
     The receiver should first be bound using a BindPlug object. 
@@ -117,9 +117,9 @@ void Spektrum::_packet_callback(void){
 
 
 /** BindPlug is used to bind a Spektrum Satellite receiver
-    @param(tx), orange wire, 3.3V supply pin, here used as a DigitalOut
-    @param(rx), gray wire, rx pin, here used as a DigitalOut
-    @param(mode) is mode, e.g. internal or external, DSM2 or DSMX, 11 or 22ms
+    @param tx orange wire, 3.3V supply pin, here used as a DigitalOut
+    @param rx gray wire, rx pin, here used as a DigitalOut
+    @param mode is mode, e.g. internal or external, DSM2 or DSMX, 11 or 22ms
     The black wire should be connected to ground.
 
     Default mode is internal, DSMX, 11 ms. Once created, this object will 
