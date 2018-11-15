@@ -3,7 +3,7 @@
   Spektrum receiver simple test
   D Evangelista, 2018
 
-  Appears to be working, 11/15/2018
+  Appears to be working, 11/15/2018 with SPM9745
 
   NB: The specification for Spektrum Remote Receiver Interfacing,
   rev A, 12 Apr 2016, has a note about servo position ranges:
@@ -30,7 +30,9 @@ uint64_t now;
 
 int main(void){
 
-  pc.printf("Spektrum receiver simple test\r\n");
+  pc.printf("Spektrum library version ");
+  pc.printf(SPEKTRUM_VERSION); 
+  pc.printf("\r\nSpektrum receiver simple test\r\n");
   pc.printf("Be sure to connect orange to p13, gray to p14, blk to gnd\r\n");
   pc.printf("Receiver should have already been bound to transmitter DSMX 22ms\r\n");
   pc.printf("Printing about 22s of data now...\r\n");

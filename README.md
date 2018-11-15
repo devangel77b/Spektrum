@@ -1,7 +1,7 @@
 # spektrum
 
 ### Dennis Evangelista
-This library provides mbed support for Spektrum serial receivers. So far, the library has been tested on a [Spektrum SPM9745 DSMX remote receiver](https://www.horizonhobby.com/SPM9745?KPID=SPM9745&CAWELAID=320011980001425764&CAGPSPN=pla&CAAGID=37619207031&CATCI=pla-518519028442&gclid=CjwKCAiAz7TfBRAKEiwAz8fKOFgsklymSCgwfoY6IgzJ0decXHqctabFSpUVYezkrSFwuWUkJqiS4RoCbcwQAvD_BwE), and will probably be tested on a SPM9645 in the near future. 
+This library provides mbed support for Spektrum serial receivers. So far, the library has been tested on a [Spektrum SPM9745 DSMX remote receiver](https://www.horizonhobby.com/SPM9745?KPID=SPM9745&CAWELAID=320011980001425764&CAGPSPN=pla&CAAGID=37619207031&CATCI=pla-518519028442&gclid=CjwKCAiAz7TfBRAKEiwAz8fKOFgsklymSCgwfoY6IgzJ0decXHqctabFSpUVYezkrSFwuWUkJqiS4RoCbcwQAvD_BwE) (since v1.0.0), and will probably be tested on a SPM9645 in the near future. 
 
 ## Obtaining the library
 Source code is revision controlled using Git and hosted in a Github repository.

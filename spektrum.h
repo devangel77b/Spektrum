@@ -1,5 +1,6 @@
 #ifndef SPEKTRUM_H
 #define SPEKTRUM_H
+#define SPEKTRUM_VERSION "1.0.0"
 
 #include "mbed.h"
 #include "rtos.h"

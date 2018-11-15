@@ -1,1 +1,2 @@
-2018-Sep-15 -- ES495 revision Original
+2018-Sep-15 -- v0.0.0 "Plebe"
+2018-Nov-15 -- v1.0.0 "Youngster", appears to be working with SPM9745 

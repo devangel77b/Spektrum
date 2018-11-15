@@ -18,7 +18,9 @@ char c;
 
 int main(){
 
-  pc.printf("Spektrum binding test, internal DSMX 11ms\r\n");
+  pc.printf("Spektrum library version ");
+  pc.printf(SPEKTRUM_VERSION); 
+  pc.printf("\r\nSpektrum binding test, internal DSMX 11ms\r\n");
   pc.printf("Be sure to connect orange to p13, gray to p14, blk to gnd\r\n");
   pc.printf("Should see blinking light, transmitter should attempt bind\r\n");
   pc.printf("Was binding successful (y/n)? ");
