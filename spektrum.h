@@ -26,13 +26,13 @@
 #define SPEKTRUM_22MS_2048_DSMX 0xa2
 #define SPEKTRUM_11MS_2048_DSMX 0xb2
 
-#define SPEKTRUM_BAUD 125000
+#define SPEKTRUM_BAUD 115200
 // Spektrum baud is 125000, but if this doesn't work 115200 should work too. 
 
 #define SPEKTRUM_SERVOS (7)
 #define SPEKTRUM_NUM_BYTES_IN_FRAME (2*SPEKTRUM_SERVOS+2)
 #define SPEKTRUM_NUM_BYTES_SERVOS (2*SPEKTRUM_SERVOS)
-#define SPEKTRUM_CHANNELS 12
+#define SPEKTRUM_CHANNELS 16
 
 class Spektrum{
  public:

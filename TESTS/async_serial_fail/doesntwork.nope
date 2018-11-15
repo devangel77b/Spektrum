@@ -1,0 +1,37 @@
+/*
+I tried this to see if LPC1768 implements the asynchronous serial methods as it says 
+in its documentation. It appears not to; trying to compile this fails as it does not have a match
+for the particular calling signature for read(). Grrrrr. 
+*/
+
+#include "mbed.h"
+#include "rtos.h"
+
+Serial pc(USBTX, USBRX, 115200);
+DigitalOut heartbeat(LED1); 
+
+Serial receiver(p13,p14,125000);
+event_callback_t packet_received_event;
+uint8_t* rx_buf;
+
+static void packet_received_callback(int events){
+  // do stuff
+  // later
+
+  // reset for the next read
+  receiver.read(rx_buf,16,packet_received_event);
+  //		SERIAL_EVENT_RX_ALL, SERIAL_RESERVED_CHAR_MATCH);
+}
+
+int main(void){
+  rx_buf = (uint8_t*) malloc(16*sizeof(uint8_t));
+  packet_received_event = packet_received_callback;
+  receiver.read(rx_buf,16,packet_received_event);
+		//	SERIAL_EVENT_RX_ALL, SERIAL_RESERVED_CHAR_MATCH);
+
+  while(1){
+    heartbeat.write(!heartbeat.read()); 
+    ThisThread::sleep_for(500); 
+  }
+  return 0; 
+}

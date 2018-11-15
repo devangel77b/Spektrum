@@ -9,7 +9,7 @@
 #include "spektrum.h"
 #include "unity.h"
 
-Serial pc(USBTX, USBRX);
+Serial pc(USBTX, USBRX, 115200);
 Spektrum receiver(p13, p14); 
 char c;
 int i; 

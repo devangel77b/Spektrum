@@ -49,18 +49,19 @@ void Spektrum::_rx_callback(void){
 	default: // got fades, now get servopos for channels 0-7
 	  _data[_state-2] = c;
 	  _state++;
-	  if (_state == SPEKTRUM_NUM_BYTES_IN_FRAME-1){
+	  if (_state == SPEKTRUM_NUM_BYTES_IN_FRAME){
 
 	    for (i=0; i<SPEKTRUM_SERVOS; i++){
 	      channelid = (_data[2*i] & SPEKTRUM_MASK_2048_CHANID_MSB) >> 3;
-	      servopos = ((_data[2*i] << 8) | _data[2*i+1]) & SPEKTRUM_MASK_2048_SXPOS;
-	      if (channelid < SPEKTRUM_CHANNELS) // channelid is always >=0
+	      servopos  = ((_data[2*i] << 8) | _data[2*i+1]) & SPEKTRUM_MASK_2048_SXPOS;
+	      //if (channelid < SPEKTRUM_CHANNELS) // channelid is always >=0
 		channel[channelid] = servopos;
 	    } // unpack data into channels
 
 	    // output data is now valid
 	    // set some flags, maybe LATER switch to EventFlag? 
-	    valid = true; 
+	    valid = true;
+	    //printf("new!");
 
 	    _state = 0; // reset state machine to idle
 	  }// if complete packet received

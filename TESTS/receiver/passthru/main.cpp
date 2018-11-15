@@ -9,7 +9,7 @@
 #include "spektrum.h"
 #include "unity.h"
 
-Serial pc(USBTX, USBRX);
+Serial pc(USBTX, USBRX, 115200);
 Spektrum receiver(p13, p14);
 PwmOut throttle(p21);
 PwmOut aileron(p22);
