@@ -83,10 +83,12 @@ class Spektrum{
 
 
 
-
+/** For binding a Spektrum receiver to transmitter */ 
 class BindPlug{
  public:
-  int mode; 
+  /** e.g. SPEKTRUM_INT_DSMX_11MS, SPEKTRUM_INT_DSMX_22MS */
+  int mode;
+  
   BindPlug(PinName tx, PinName rx, int mode = SPEKTRUM_INT_DSMX_11MS);
   ~BindPlug();
   void bind();
