@@ -1,3 +1,9 @@
+/*
+  spektrum.cpp
+  Implementation file for Spektrum serial receiver mbed library
+  Dennis Evangelista, 2018
+*/
+
 #include "mbed.h"
 #include "rtos.h"
 
@@ -38,13 +44,15 @@ Spektrum::Spektrum(PinName tx, PinName rx):
 
 
 
-
+/** Destructor for Spektrum object 
+ */
 Spektrum::~Spektrum(){
 } // ~Spektrum() destructor
 
 
 
-
+/** Private callback for when a packet is received
+ */
 void Spektrum::_packet_callback(void){
   // local variables
   int count; // used to get error code -11 or num of bytes _rx.read()
@@ -98,7 +106,7 @@ void Spektrum::_packet_callback(void){
 
     ThisThread::sleep_until(now+period_ms); // sleep to get right rate
   } // while(1)
-} // _rx_callback() 
+} // _packet_callback() 
 
 
 
@@ -108,15 +116,15 @@ void Spektrum::_packet_callback(void){
 
 
 
-/* BindPlug is used to bind a Spektrum Satellite receiver
-   @param(tx) is the orange wire, 3.3V supply pin, here used as a DigitalOut
-   @param(rx) is the gray wire, rx pin, here used as a DigitalOut
-   @param(mode) is the mode, e.g. internal or external, DSM2 or DSMX, 11 or 22ms
-   The black wire should be connected to ground.
+/** BindPlug is used to bind a Spektrum Satellite receiver
+    @param(tx), orange wire, 3.3V supply pin, here used as a DigitalOut
+    @param(rx), gray wire, rx pin, here used as a DigitalOut
+    @param(mode) is mode, e.g. internal or external, DSM2 or DSMX, 11 or 22ms
+    The black wire should be connected to ground.
 
-   Default mode is internal, DSMX, 11 ms. Once created, this object will 
-   send a number of falling pulses over the 3.3V supply pin to trigger 
-   the satellite receiver to go into bind mode. 
+    Default mode is internal, DSMX, 11 ms. Once created, this object will 
+    send a number of falling pulses over the 3.3V supply pin to trigger 
+    the satellite receiver to go into bind mode. 
 */
 BindPlug::BindPlug(PinName tx, PinName rx, int mode): _3Vpin(tx),_datapin(rx){
   int i; // counter
@@ -141,6 +149,8 @@ BindPlug::BindPlug(PinName tx, PinName rx, int mode): _3Vpin(tx),_datapin(rx){
   debug("\r\n"); 
 } // BindPlug(bind, mode) constructor
 
+/** Destructor for BindPlug object
+ */
 BindPlug::~BindPlug(){
 } // ~BindPlug() destructor
 

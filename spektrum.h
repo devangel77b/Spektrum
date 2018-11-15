@@ -1,3 +1,9 @@
+/*
+  spektrum.h
+  Spektrum serial receiver mbed library
+  Dennis Evangelista, 2018
+*/
+
 #ifndef SPEKTRUM_H
 #define SPEKTRUM_H
 #define SPEKTRUM_VERSION "1.0.0"
@@ -28,22 +34,39 @@
 #define SPEKTRUM_11MS_2048_DSMX 0xb2
 
 #define SPEKTRUM_BAUD 115200
-// Spektrum baud is supposed to be 125000
-// but the LPC1768 seems not to support nonstandard baud rates.
+// Spektrum baud is supposed to be 125000, but the LPC1768 seems not
+// to support nonstandard baud rates.
 
 #define SPEKTRUM_SERVOS 7
 #define SPEKTRUM_PACKET_SIZE 16
 #define SPEKTRUM_CHANNELS 16
 #define SPEKTRUM_COUNT2US(x) (x*600/1024+900)
 
+
+
+
+/** Spektrum receiver object for connecting to eg SPM9745 receiver
+ */
 class Spektrum{
  public:
-  unsigned int fades; 
+  /** Number of fades (failed packets) from receiver */
+  unsigned int fades;
+  
+  /** Tells if system is in DSMX 11ms or 22ms for example */
   unsigned int system; 
+
+  /** Contains 0-2048 values for all channels 0-15 */ 
   unsigned int channel[SPEKTRUM_CHANNELS];
-  unsigned int pulsewidth[SPEKTRUM_CHANNELS]; 
+
+  /** Contains approx 900-2100us pulsewidths corresponding to chan 0-15 */
+  unsigned int pulsewidth[SPEKTRUM_CHANNELS];
+
+  /** If true, data is value */ 
   bool valid;  // TODO switch to EventFlags?
-  unsigned int period_ms; 
+
+  /** 11 or 22 ms */ 
+  unsigned int period_ms;
+  
   Spektrum(PinName tx, PinName rx); // constructor
   ~Spektrum(); // destructor
 
