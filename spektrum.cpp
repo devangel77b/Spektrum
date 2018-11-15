@@ -3,76 +3,108 @@
 
 #include "spektrum.h"
 
-/* Spektrum is used for a working connection to a Spektrum Satellite receiver
-   @param(tx) is the orange wire, 3.3V supply pin (should be held high normally)
-   @param(rx) is the gray wire, rx pin from the receiver
-   The black wire should be connected to ground. 
 
-   The receiver should first be bound using a BindPlug object. 
+
+
+
+
+/** Spektrum is used for a working connection to a Spektrum Satellite receiver
+    @param(tx), orange wire, 3.3V supply pin (should be held high normally)
+    @param(rx), gray wire, rx pin from the receiver
+    The black wire should be connected to ground. 
+
+    The receiver should first be bound using a BindPlug object. 
 */
-Spektrum::Spektrum(PinName tx, PinName rx, PinName rx_led): _receiver(tx, rx), _rx_led(rx_led){
-  _receiver.baud(SPEKTRUM_BAUD); // Spektrum uses 125000 8N1 or 115200 8N1
+Spektrum::Spektrum(PinName tx, PinName rx):
+  _rx(tx, rx, SPEKTRUM_BAUD){
+  
+  // receiver uses e.g. p13, p14 and 115200 baud. 
+  _rx.set_blocking(false); // want receiver to not block
+  period_ms = 11; // start with 11ms period.
 
-  _rx_thread.start(callback(this,&Spektrum::_rx_callback)); 
+  // initialize public variables... 
+  system = 0; // should be 0xa2 or 0xb2 for DSMX modes
+  fades = 0;
+  for (int i=0; i<SPEKTRUM_CHANNELS; i++){
+    channel[i] = 0; 
+    pulsewidth[i] = 0;
+  }
+  valid = false; 
+
+  // start the packet reading thread
+  _packet_thread.start(callback(this,&Spektrum::_packet_callback)); 
 } // Spektrum(tx, rx) constructor
+
+
+
+
 
 Spektrum::~Spektrum(){
 } // ~Spektrum() destructor
 
-void Spektrum::_rx_callback(void){
-  unsigned char c;        // character read 
-  unsigned int i;         // for loop counter
-  unsigned int channelid; // for unpacking channel id 
-  unsigned int servopos;  // for unpacking servo position data
+
+
+
+void Spektrum::_packet_callback(void){
+  // local variables
+  int count; // used to get error code -11 or num of bytes _rx.read()
+  uint64_t now; // for getting 11 or 22 ms period via ThisThread::sleep_until()
+  unsigned int i; // counter for for loop
+  unsigned int data; // for assembling 2 bytes into uint16_t
+  unsigned int chanid; // for decoding channel ID with mask 0x7800
+  unsigned int servopos; // for decoding servo value with mask 0x07ff
   
   // setup
-  debug("Spektrum rx_thread started\r\n");
+  debug("Spektrum::_packet_thread started\r\n");
 
   // loop
+  _rx.sync(); // flush buffer
   while(1){
-    if (_receiver.readable()){
-	c = _receiver.getc();
-	switch(_state){
+    now = rtos::Kernel::get_ms_count(); // for timing
+    count = _rx.read(_buf,SPEKTRUM_PACKET_SIZE); // try to read packet
+    
+    if (count == SPEKTRUM_PACKET_SIZE){
+      // got a full sized packet
+      if (_buf[1] == SPEKTRUM_22MS_2048_DSMX){
+	period_ms = 22; 
+	valid = true;
+      } // got 22ms packets
+      else if (_buf[1] == SPEKTRUM_11MS_2048_DSMX){
+	period_ms = 11;
+	valid = true;
+      } // got 11ms packets
+      else
+	// if system is not 0xa2 or 0xb2, treat as invalid
+	valid = false;
+    } // if count == 16
+    else {
+      // count wasn't 16 so some kind of error
+      valid = false;
+      _rx.sync(); // not getting enough bytes, so sync()
+    }
 
-	case 0: // idle, waiting for start
-	  if ((c==SPEKTRUM_22MS_2048_DSMX) || (c==SPEKTRUM_11MS_2048_DSMX)){
-	    system = c; 
-	    _state = 1;
-	  }
-	  break;
+    if (valid){
+      // got a valid packet so parse it 
+      fades = _buf[0];
+      system = _buf[1];
+      for (i=0; i<SPEKTRUM_SERVOS; i++){
+	data = (_buf[2*i+2]<<8) | _buf[2*i+2+1];
+	chanid = (data & SPEKTRUM_MASK_2048_CHANID) >> 11;
+	servopos = data & SPEKTRUM_MASK_2048_SXPOS;
+	channel[chanid] = servopos;
+	pulsewidth[chanid] = SPEKTRUM_COUNT2US(servopos); 
+      } // for each servo in packet
+    } // if(valid)
 
-	case 1: // got 0xa2 or 0xb2, get fades next
-	  fades = c;
-	  _state = 2;
-	  break;
-
-	default: // got fades, now get servopos for channels 0-7
-	  _data[_state-2] = c;
-	  _state++;
-	  if (_state == SPEKTRUM_NUM_BYTES_IN_FRAME){
-
-	    for (i=0; i<SPEKTRUM_SERVOS; i++){
-	      channelid = (_data[2*i] & SPEKTRUM_MASK_2048_CHANID_MSB) >> 3;
-	      servopos  = ((_data[2*i] << 8) | _data[2*i+1]) & SPEKTRUM_MASK_2048_SXPOS;
-	      //if (channelid < SPEKTRUM_CHANNELS) // channelid is always >=0
-		channel[channelid] = servopos;
-	    } // unpack data into channels
-
-	    // output data is now valid
-	    // set some flags, maybe LATER switch to EventFlag? 
-	    valid = true;
-	    //printf("new!");
-
-	    _state = 0; // reset state machine to idle
-	  }// if complete packet received
-	} // switch(_state)
-    } // if readable
+    ThisThread::sleep_until(now+period_ms); // sleep to get right rate
   } // while(1)
 } // _rx_callback() 
 
-int spektrum_us(unsigned int servopos){
-  return (servopos * 600/1024 + 900);
-}
+
+
+
+
+
 
 
 
@@ -117,8 +149,7 @@ BindPlug::~BindPlug(){
 
 
 
-/*
-// LATER
+/* LATER
 SpektrumTestDevice::SpektrumTestDevice(PinName tx, PinName rx): _receiver(tx,rx){
   _receiver.baud(SPEKTRUM_BAUD);
 } // SpektrumTestDevice(tx, rx) constructor

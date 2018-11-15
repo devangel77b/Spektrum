@@ -27,37 +27,36 @@
 #define SPEKTRUM_11MS_2048_DSMX 0xb2
 
 #define SPEKTRUM_BAUD 115200
-// Spektrum baud is 125000, but if this doesn't work 115200 should work too. 
+// Spektrum baud is supposed to be 125000
+// but the LPC1768 seems not to support nonstandard baud rates.
 
-#define SPEKTRUM_SERVOS (7)
-#define SPEKTRUM_NUM_BYTES_IN_FRAME (2*SPEKTRUM_SERVOS+2)
-#define SPEKTRUM_NUM_BYTES_SERVOS (2*SPEKTRUM_SERVOS)
+#define SPEKTRUM_SERVOS 7
+#define SPEKTRUM_PACKET_SIZE 16
 #define SPEKTRUM_CHANNELS 16
+#define SPEKTRUM_COUNT2US(x) (x*600/1024+900)
 
 class Spektrum{
  public:
-  unsigned int system; 
   unsigned int fades; 
+  unsigned int system; 
   unsigned int channel[SPEKTRUM_CHANNELS];
-  bool valid; 
-  Spektrum(PinName tx, PinName rx, PinName rx_led=LED1); // constructor
+  unsigned int pulsewidth[SPEKTRUM_CHANNELS]; 
+  bool valid;  // TODO switch to EventFlags?
+  unsigned int period_ms; 
+  Spektrum(PinName tx, PinName rx); // constructor
   ~Spektrum(); // destructor
 
  private:
-  Serial _receiver;
-  DigitalOut _rx_led;
-
-  char _state; 
-  unsigned char _data[SPEKTRUM_NUM_BYTES_SERVOS];
-  Thread _rx_thread;
-  void _rx_callback(void); 
+  UARTSerial _rx;
+  unsigned char _buf[SPEKTRUM_PACKET_SIZE]; 
+  Thread _packet_thread;
+  void _packet_callback(void); 
 };
 
-/** Convert 2048 value into us pwm pulse width (600-2100us, 900us center). 
-    @param(servopos) is position value (0-2048) for a channel
-    @returns us for use with PwmOut::pulsewidth_us(). 
- */
-int spektrum_us(unsigned int servopos); 
+
+
+
+
 
 
 
@@ -73,8 +72,7 @@ class BindPlug{
   DigitalOut _datapin;
 };
 
-/*
-// LATER
+/* LATER
 class SpektrumTestDevice{
  public:
   unsigned int fades;
