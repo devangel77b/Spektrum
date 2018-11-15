@@ -24,7 +24,7 @@ PwmOut rudder(p22);
 
 
 int main(void){
-  int i; // a counter for for loop
+  int i=0; // a counter for for loop
   uint64_t now; // for timing the loop to be 11 or 22ms
 
   // setup
@@ -45,7 +45,7 @@ int main(void){
     if (rx.valid){
       // display on screen? may be too slow for 22 ms update rate
       pc.printf("%d. mainsail %4d, rudder %4d\r\n",
-		i, 
+		i++, 
 		rx.pulsewidth[0], // DX9 channel 0 throttle
 		rx.pulsewidth[3]); // DX9 channel 3 rudder
 
