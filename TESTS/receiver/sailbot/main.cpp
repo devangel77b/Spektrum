@@ -1,4 +1,5 @@
 /*
+  TESTS/receiver/sailbot/main.cpp
   Spektrum receiver passthru test for Sailbot
   D Evangelista, 2018
 
@@ -16,6 +17,7 @@
 #include "mbed.h"
 #include "rtos.h"
 #include "spektrum.h"
+#include "unity.h"
 
 Serial pc(USBTX, USBRX, 115200);
 Spektrum rx(p13, p14);
@@ -59,6 +61,11 @@ int main(void){
     
     ThisThread::sleep_until(now+rx.period_ms); 
   }//for
+
+  //pc.printf("Successful (y/n)? ");
+  //pc.scanf(" %c",&c);
+  //TEST_ASSERT_EQUAL_MESSAGE('y',c,"receiver simple test failed.\r\n");
+  return 0; 
   
 } // main()
 
