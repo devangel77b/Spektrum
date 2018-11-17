@@ -1,5 +1,5 @@
 /*
-  spektrum.h
+  Spektrum.h
   Spektrum serial receiver mbed library
   Dennis Evangelista, 2018
 */

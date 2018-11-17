@@ -7,7 +7,7 @@
 
 #include "mbed.h"
 #include "rtos.h"
-#include "spektrum.h"
+#include "Spektrum.h"
 #include "unity.h"
 
 Serial pc(USBTX, USBRX); 

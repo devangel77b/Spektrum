@@ -1,5 +1,5 @@
 /*
-  spektrum.cpp
+  Spektrum.cpp
   Implementation file for Spektrum serial receiver mbed library
   Dennis Evangelista, 2018
 */
@@ -7,7 +7,7 @@
 #include "mbed.h"
 #include "rtos.h"
 
-#include "spektrum.h"
+#include "Spektrum.h"
 
 
 
