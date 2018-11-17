@@ -6,7 +6,7 @@ This library provides mbed support for Spektrum serial receivers. So far, the li
 ## Obtaining the library
 Source code is revision controlled using Git and hosted in a Github repository.
 ```bash
-git clone ssh://git@github.com/devangel77b/spektrum.git
+git clone ssh://git@github.com/devangel77b/Spektrum.git
 git pull
 ```
 The ```dev``` branch is bleeding edge; ```master``` branch is reasonably up to date. 
