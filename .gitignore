@@ -1,5 +1,5 @@
 *~
 *.pyc
 .mbed
-mbed_settings.py
 .temp/
+BUILD/*
